@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Events</h2>
+        <a class="btn btn-primary" th:href="@{/events/new}">+ Add Event</a>
+    </div>
+
+    <!-- FILTER + SORT FORM -->
+    <form class="row g-2 mb-3" th:action="@{/events}" method="get">
+
+        <div class="col-md-4">
+            <select class="form-select" name="type">
+                <option value="">All Types</option>
+                <option th:each="t : ${types}"
+                        th:value="${t}"
+                        th:text="${t}"
+                        th:selected="${selectedType} == ${t}">
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <select class="form-select" name="sort">
+                <option value="eventDate" th:selected="${selectedSort}=='eventDate'">Sort by Date</option>
+                <option value="capacity" th:selected="${selectedSort}=='capacity'">Sort by Capacity</option>
+                <option value="price" th:selected="${selectedSort}=='price'">Sort by Price</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select class="form-select" name="dir">
+                <option value="asc" th:selected="${selectedDir}=='asc'">Ascending</option>
+                <option value="desc" th:selected="${selectedDir}=='desc'">Descending</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-dark w-100" type="submit">Apply</button>
+        </div>
+
+    </form>
+
+    <!-- TABLE -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Capacity</th>
+                <th>Price</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:if="${#lists.isEmpty(events)}">
+                <td colspan="6" class="text-center">No events found.</td>
+            </tr>
+
+            <tr th:each="e : ${events}">
+                <td th:text="${e.name}"></td>
+                <td th:text="${e.type}"></td>
+                <td th:text="${e.location}"></td>
+                <td th:text="${e.eventDate}"></td>
+                <td th:text="${e.capacity}"></td>
+                <td th:text="${e.price}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a class="btn btn-secondary" th:href="@{/}">Back Home</a>
+
+</div>
+
+</body>
+</html>
