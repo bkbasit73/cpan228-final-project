@@ -1,66 +1,20 @@
-# CPAN-228 Final Project – Deliverable 1
+# Event Booking System
 
-## 📌 Project Title
-Event Booking System
+Final group project for CPAN-228 Web Application Development.
 
-## 👥 Group Members
-- Abdul Basit
-- Davinder Kehal
-- Maryan Farah
-
----
-
-## 📖 Project Description
-This is a web-based Event Booking System developed using:
-
+Technologies
 - Spring Boot
 - Thymeleaf
 - Spring Data JPA
 - H2 Database
 - Bootstrap
 
-Users can create and manage events such as workshops, meetups, seminars, and conferences.
+How to Run
+1. Clone repository
+2. Run: mvnw.cmd spring-boot:run
+3. Open: http://localhost:8081
 
----
-
-## 🚀 Features Implemented
-
-### ✔ Informational Pages
-- Home Page
-- About Page
-- Contact Page
-
-### ✔ Event Management
-- Add new events
-- View all events
-- Auto-loaded sample events
-
-### ✔ Data Validation
-- Required fields validation
-- Capacity limits
-- Price validation
-
-### ✔ Filtering & Sorting
-Users can:
-- Filter by event type
-- Sort by:
-  - Date
-  - Capacity
-  - Price
-
-### ✔ Database
-- H2 in-memory database
-- Data persists during runtime
-- Sample data loads automatically on startup
-
-### ✔ UI
-- Responsive Bootstrap design
-
----
-
-## 🛠️ How to Run the Project
-
-Clone the repository:
-
-```bash
-git clone https://github.com/bkbasit73/cpan228-final-project.git
+Team Members
+- Abdul Basit
+- Davinder Kehal
+- Maryan Farah
