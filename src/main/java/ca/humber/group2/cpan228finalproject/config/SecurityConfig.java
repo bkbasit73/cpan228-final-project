@@ -4,10 +4,10 @@ import ca.humber.group2.cpan228finalproject.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
 public class SecurityConfig {
@@ -27,7 +27,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/home", "/about", "/contact", "/login", "/register", "/css/**", "/js/**").permitAll()
+                .requestMatchers(
+                    "/", "/home", "/about", "/contact", "/login", "/register",
+                    "/css/**", "/js/**", "/h2-console/**"
+                ).permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/events/new").hasAnyRole("ADMIN", "ORGANIZER")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -39,7 +44,14 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutSuccessUrl("/login")
                 .permitAll()
+            )
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/h2-console/**")
+            )
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.disable())
             );
+
         return http.build();
     }
 }
