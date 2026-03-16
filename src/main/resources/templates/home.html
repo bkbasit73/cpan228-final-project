@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Event Booking System</title>
@@ -12,20 +13,54 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
+
         <a class="navbar-brand" th:href="@{/}">Event Booking System</a>
-        <div>
-    <a class="btn btn-outline-light me-2" th:href="@{/events}">View Events</a>
-    <a class="btn btn-success me-2" th:href="@{/events/new}">Add Event</a>
-    <a class="btn btn-outline-info" th:href="@{/about}">About</a>
-    <a class="btn btn-outline-warning" th:href="@{/contact}">Contact</a>
-    <a class="btn btn-outline-light ms-2" href="/login">Login</a> // Adding Login button to the navbar
-</div>
+
+        <div class="ms-auto">
+
+            <a class="btn btn-outline-light me-2" th:href="@{/events}">View Events</a>
+
+            <a class="btn btn-success me-2" th:href="@{/events/new}">Add Event</a>
+
+            <a class="btn btn-outline-info me-2" th:href="@{/about}">About</a>
+
+            <a class="btn btn-outline-warning me-2" th:href="@{/contact}">Contact</a>
+
+            <!-- ADMIN ONLY BUTTON -->
+            <a class="btn btn-outline-danger me-2"
+               th:href="@{/admin}"
+               sec:authorize="hasRole('ADMIN')">
+               Admin
+            </a>
+
+            <!-- LOGIN BUTTON -->
+            <a class="btn btn-outline-light me-2"
+               th:href="@{/login}"
+               sec:authorize="!isAuthenticated()">
+               Login
+            </a>
+
+            <!-- LOGOUT BUTTON -->
+            <form th:action="@{/logout}" method="post"
+                  style="display:inline;"
+                  sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+
+        </div>
+
     </div>
 </nav>
 
 <div class="container mt-5 text-center">
+
     <h1 class="mb-4">Welcome to Event Booking System</h1>
-    <p class="lead">Manage and create events easily.</p>
+
+    <p class="lead">
+        Manage and create events easily.  
+        Browse available events or organize your own.
+    </p>
+
 </div>
 
 </body>
