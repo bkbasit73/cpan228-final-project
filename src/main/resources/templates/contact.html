@@ -1,31 +1,239 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8">
     <title>Contact</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; color: #171a20; }
+        .navbar { position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); padding: 14px 0; }
+        .navbar-brand { font-weight: 800; font-size: 1.2rem; color: #fff !important; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; }
+        .nav-link-custom { color: rgba(255,255,255,0.85); font-size: 0.82rem; font-weight: 500; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: background 0.2s; }
+        .nav-link-custom:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-nav { font-size: 0.82rem; font-weight: 600; border-radius: 6px; padding: 7px 18px; }
+        .page-header { padding: 120px 0 48px; background: #171a20; color: #fff; }
+        .page-header h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
+        .page-header p { color: rgba(255,255,255,0.6); font-size: 1rem; margin-top: 8px; }
+        .card-clean { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 36px; border: none; height: 100%; }
+        .section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #65676b; margin-bottom: 20px; }
+        .section-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+        .member-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0f0; }
+        .member-row:last-child { border-bottom: none; }
+        .member-avatar { width: 44px; height: 44px; border-radius: 50%; background: #171a20; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.95rem; flex-shrink: 0; }
+        .member-name { font-weight: 600; font-size: 0.95rem; }
+        .member-role { font-size: 0.78rem; color: #65676b; }
+        .member-link { font-size: 0.78rem; color: #171a20; font-weight: 600; text-decoration: none; border-bottom: 1px solid #171a20; }
+        .member-link:hover { color: #555; }
+        .form-control { border-radius: 8px; border: 1px solid #e4e6ea; font-size: 0.9rem; padding: 12px 14px; }
+        .form-control:focus { border-color: #171a20; box-shadow: none; }
+        .form-label { font-size: 0.78rem; font-weight: 700; color: #65676b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .btn-submit { background: #171a20; color: #fff; font-weight: 700; border-radius: 8px; padding: 12px 32px; font-size: 0.9rem; border: none; width: 100%; transition: background 0.2s; }
+        .btn-submit:hover { background: #333; color: #fff; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #28a745; display: inline-block; margin-right: 6px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .status-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.875rem; }
+        .status-row:last-child { border-bottom: none; }
+        .status-key { color: #65676b; font-weight: 500; }
+        .status-val { font-weight: 700; }
+        .faq-item { padding: 18px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        .faq-a { font-size: 0.875rem; color: #65676b; margin-top: 10px; line-height: 1.6; display: none; }
+        .faq-item.open .faq-a { display: block; }
+        .faq-item.open .faq-arrow { transform: rotate(180deg); }
+        .faq-arrow { transition: transform 0.2s; font-style: normal; }
+        .btn-back { background: transparent; color: #65676b; font-size: 0.85rem; font-weight: 600; border: 1px solid #e4e6ea; border-radius: 8px; padding: 8px 18px; text-decoration: none; }
+        .btn-back:hover { background: #f0f0f0; color: #171a20; }
+        .success-msg { display: none; background: #e6f4ea; color: #1a7a3c; border-radius: 8px; padding: 14px 18px; font-size: 0.875rem; font-weight: 600; margin-top: 16px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-light">
+<nav class="navbar">
+    <div class="container d-flex align-items-center justify-content-between">
+        <a class="navbar-brand" th:href="@{/}">EventBook</a>
+        <div class="d-flex align-items-center gap-1">
+            <a class="nav-link-custom" th:href="@{/events}">Events</a>
+            <a class="nav-link-custom" th:href="@{/about}">About</a>
+            <a class="nav-link-custom" th:href="@{/contact}">Contact</a>
+            <a class="nav-link-custom" th:href="@{/admin}" sec:authorize="hasRole('ADMIN')">Admin</a>
+            <a class="nav-link-custom" th:href="@{/events/new}" sec:authorize="hasAnyRole('ADMIN','ORGANIZER')">+ New Event</a>
+            <a class="btn btn-nav btn-light ms-2" th:href="@{/login}" sec:authorize="!isAuthenticated()">Log In</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button type="submit" class="btn btn-nav ms-2" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);">Log Out</button>
+            </form>
+        </div>
+    </div>
+</nav>
 
-<div class="container mt-5">
-    <h2>Contact Us</h2>
-
-    <p>If you have any questions, feel free to reach out.</p>
-
-    <ul>
-        <li><strong>Group:</strong> Group 2</li>
-        <li><strong>Members:</strong>
-            <ul>
-                <li>Abdul Basit</li>
-                <li>Davinder Kehal</li>
-                <li>Maryan Farah</li>
-            </ul>
-        </li>
-        <li><strong>Email:</strong> group2@cpan228.com</li>
-    </ul>
-
-    <a class="btn btn-secondary" th:href="@{/}">Back Home</a>
+<div class="page-header">
+    <div class="container">
+        <h1>Contact</h1>
+        <p>Reach out to the team or find answers below.</p>
+    </div>
 </div>
 
+<div class="container py-5">
+    <div class="row g-4">
+
+        <div class="col-lg-4 d-flex flex-column gap-4">
+
+            <div class="card-clean">
+                <p class="section-label">The Team</p>
+                <div class="member-row">
+                    <div class="member-avatar">AB</div>
+                    <div>
+                        <div class="member-name">Abdul Basit</div>
+                        <div class="member-role">Security & Backend</div>
+                        <a class="member-link" href="https://github.com/bkbasit73" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="member-row">
+                    <div class="member-avatar">DK</div>
+                    <div>
+                        <div class="member-name">Davinder Kehal</div>
+                        <div class="member-role">Testing & QA</div>
+                        <a class="member-link" href="https://github.com/Davinderkehal" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="member-row">
+                    <div class="member-avatar">MF</div>
+                    <div>
+                        <div class="member-name">Maryan Farah</div>
+                        <div class="member-role">Frontend & UI</div>
+                        <a class="member-link" href="https://github.com/MaryanFarahsectionE" target="_blank">GitHub</a>
+                    </div>
+                </div>
+                <div class="mt-3" style="font-size:0.85rem;color:#65676b;">
+                    group2@cpan228.com
+                </div>
+            </div>
+
+            <div class="card-clean">
+                <p class="section-label">System Status</p>
+                <div class="status-row">
+                    <span class="status-key"><span class="status-dot"></span>Server</span>
+                    <span class="status-val" style="color:#28a745;">Online</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-key">Environment</span>
+                    <span class="status-val">Development</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-key">Database</span>
+                    <span class="status-val">H2 In-Memory</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-key">Local Time</span>
+                    <span class="status-val" id="livetime">--:--:--</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-key">Uptime</span>
+                    <span class="status-val" id="uptime">0s</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 d-flex flex-column gap-4">
+            <div class="card-clean">
+                <p class="section-label">Send a Message</p>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" id="contactName" placeholder="Your name">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="contactEmail" placeholder="your@email.com">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    <select class="form-control" id="contactSubject">
+                        <option value="">Select a topic</option>
+                        <option>Event booking question</option>
+                        <option>Account issue</option>
+                        <option>Organizer request</option>
+                        <option>Bug report</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Message</label>
+                    <textarea class="form-control" id="contactMessage" rows="4" placeholder="Write your message here..."></textarea>
+                </div>
+                <button class="btn-submit" onclick="submitForm()">Send Message</button>
+                <div class="success-msg" id="successMsg">Your message has been sent. We will get back to you shortly.</div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card-clean">
+                <p class="section-label">Frequently Asked Questions</p>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">How do I create an event? <span class="faq-arrow">&#8964;</span></div>
+                    <div class="faq-a">Log in with an Organizer or Admin account, then click "+ New Event" in the navigation bar. Fill in the event details and submit the form.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">How do I get an Organizer role? <span class="faq-arrow">&#8964;</span></div>
+                    <div class="faq-a">Register a new account and contact an Admin to have your role updated to Organizer through the Admin panel.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Why can't I access the Admin panel? <span class="faq-arrow">&#8964;</span></div>
+                    <div class="faq-a">The Admin panel is restricted to users with the ADMIN role. If you need access, contact the system administrator.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">Can I filter events by type? <span class="faq-arrow">&#8964;</span></div>
+                    <div class="faq-a">Yes. On the Events page, use the filter dropdown to select a specific event type, then click Apply to update the results.</div>
+                </div>
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <div class="faq-q">How are passwords stored? <span class="faq-arrow">&#8964;</span></div>
+                    <div class="faq-a">All passwords are hashed using BCrypt before being stored in the database. Plain text passwords are never saved.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+        <a class="btn-back" th:href="@{/}">Back Home</a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const startTime = Date.now();
+
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('livetime').textContent = now.toLocaleTimeString();
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(elapsed / 60);
+        const s = elapsed % 60;
+        document.getElementById('uptime').textContent = m > 0 ? m + 'm ' + s + 's' : s + 's';
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function toggleFaq(el) {
+        el.classList.toggle('open');
+    }
+
+    function submitForm() {
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        if (!name || !email || !message) {
+            alert('Please fill in all required fields.');
+            return;
+        }
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('contactName').value = '';
+        document.getElementById('contactEmail').value = '';
+        document.getElementById('contactSubject').value = '';
+        document.getElementById('contactMessage').value = '';
+    }
+</script>
 </body>
 </html>
