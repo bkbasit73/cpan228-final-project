@@ -196,6 +196,19 @@ docs/admin.png
 docs/login.png
 ```
 
+# Docker Deployment
+
+This project supports two environments using Spring profiles:
+
+## Development Profile
+- Uses H2 database
+- Default profile for local development
+- Run locally with:
+
+```bash
+.\mvnw.cmd spring-boot:run
+H2 console is available only in dev
+H2 console is not available in qa
 ---
 
 # Author
