@@ -192,7 +192,13 @@ Example:
 
 ```
 docs/home.png
+
+
+
 docs/admin.png
+
+
+
 docs/login.png
 ```
 
@@ -207,6 +213,14 @@ This project supports two environments using Spring profiles:
 
 ```bash
 .\mvnw.cmd spring-boot:run
+
+## Docker Testing
+
+Commands used
+
+docker compose up --build -d
+docker compose ps
+
 H2 console is available only in dev
 H2 console is not available in qa
 ---
